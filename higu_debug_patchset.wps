@@ -1,0 +1,72 @@
+// Weird patch format...
+
+// This is a comment
+
+buildid=0c28b121bac7801c3dcff93b81820bfa00000000000000000000000000000000
+base=0x7100000000
+
+@FirstBoot_alert_callback_exec = 0x710005797c
+@open_Debug_menu = 0x71000db340
+
+@name_base_addr = 0x7100141000
+
+
+// implement DEBUGOUT (with the help of debugger)
+710000fb64: e0030032 -> /b debug_out/
+
+// put a helper over unsused opcode handler (LAYERSWAP)
+710000ada4: ... -> / /
+          : ... -> s@debugout_helper.s
+
+
+// Load patch.rmm as additional game archive
+710005516c: e8634039 -> /b 0x10/
+          : 68000036 -> /strb w8, [sp, #40]/
+          : e01740f9 -> /b 0x44/
+7100055220: 38634039 -> /ldrb w8, [sp, #40]/
+          : 68000036 -> /tbz w8, #1, 0xc/
+          : e01740f9 -> /mov w8, #0x6d/
+          : 8b4d0294 -> /b -0xbc/
+
+// Skip initial credits (sorry, takes too long =))
+71000560e8: 687a40b9 -> /mov x8, #4/
+          : 1f110071 -> /str w8, [x19, #120]/
+          : 61000054 -> /nop/
+
+// skip alert about keeping device awake
+7100056598: e0030091 -> /mov x2, #1/
+          : 4cf6f397 -> /mov x1, sp/
+71000565b4: e1030091 -> /str x2, [x1]/
+71000565c0: 6b01ff97 -> /bl FirstBoot_alert_callback_exec/
+71000565ec: e8030091 -> /b 0xcc/
+
+// Always include "dumb" question in quiz
+// 7100098e24: 60010035 -> /nop/
+
+// Open debug menu instead of manual
+71000dab40: e80200b0 -> /mov x0, x19/
+          : 01d94ebd -> /bl open_Debug_menu/
+          : 00102c1e -> /mov x8, 0/
+          : 80420691 -> /str w8, [x19, #156]/
+          : e1031a32 -> /b -0x17c/
+
+// Select manual by default in Title menu
+71000e2364: 00008012 -> /mov w0, #4/
+// Skip TitleDemo
+71000e231c: 350200b4 -> /b 0x44/
+
+// Debug menu text
+7100144e2b: ... -> "@bHint.@<Hinted@>@<aaa@>\x00"
+7100144e47: ... -> "Start Test Mode\x00"
+7100144e60: ... -> "Unlock scenario\x00"
+7100144e70: ... -> "Unlock CG,BGM,MOVIE\x00"
+7100144e86: ... -> "Cancel\x00"
+
+
+// more "stupid" attempt to skip initial credits. Does not fully work
+/*
+71001bd700: b4 -> 00
+71001bd718: 0a -> 00
+71001bd730: 78 -> 00
+71001bd748: 78 -> 00
+*/
