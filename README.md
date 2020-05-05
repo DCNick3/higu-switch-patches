@@ -21,7 +21,7 @@ You will also need a game's uncompressed executable file. For this you would req
 
 - Extract exefs files from it (i. e. using [hactool](https://github.com/SciresM/hactool): `hactool e739d24e6ec4d3e4cee8f8a215fd38b7.nca --titlekey=[INSERT_TITLE_KEY_HERE] --exefsdir=exefs`)
 
-- Get the `main` file from exefs (sha1sum - `672183daf5438e8fe0a6986813188de30c3152b7`) and make an uncompressed version of it (i. e. `hactool -t nso main --uncompressed=main_uncompressed`)
+- Get the `main` file from exefs (buildid - `0C28B121BAC7801C3DCFF93B81820BFA00000000000000000000000000000000`, sha1sum - `672183daf5438e8fe0a6986813188de30c3152b7`) and make an uncompressed version of it (i. e. `hactool -t nso main --uncompressed=main_uncompressed`)
 
 - Put the uncompressed file to this directory with the name `main_uncompressed`
 
